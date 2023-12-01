@@ -5,8 +5,9 @@ env:
   global:
     - SHA=$(git rev-parse HEAD)
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+    - secure: kG1rXfL4O1bUD9C7GZbPaF8EoULGpSqZ0Pg6ynE8Vkqiecyx+2D0LTIWcKFMQlvq53HF1Gq0+IxWsfyYVQ2yKuwcWl5rNDZEWTyeGz/g4c0BFZvQIZBf9+X+nk5U7THdRqlNYlWSh5codN2JiOtV96sdicXwzZ3jwpOquKDhv+LuF8zxx8c6d2yGojapPf11ZI027q33ur1HHSwqmXMm4O08Wjj+87Uzoibc9GXirhme4xNF5+SVgjMi7dS31KmzZWlTjf5w+QQjuUmBsJypAMuQTXe2v69/rGuFkoKai1mIy+bsIHm+eV5YTPTXHyCZ/OeeC5lH5ZvuDFfSaq1uagrKdaPEK+UsqaLp6eVR9XNiluWF+0SjgQSNt/RDkhuXWImWbLdoFLK5yT6a79n+pFlAiymZIdGFoiY4J/tYR/MV1mgB35jn4y5jxTkPEgXdCCPAOIYDyvbqnWk2qgeIOBIrGZm0fq6Orh6NzEk8onRgHk0/TFwImQHrmykSCdLd28FukI/lZsGB5xALnNEObWw7a+d3x8an4+XkhcJc99gUToTTK4RHz0KhEl/bCzrwFXAUdowb0l36hVEgqhkNR4Ns7NPNZvgj6WaZv+EHM0WKhSl/JKs1nzbfkHL100B2ve9yEJD07khW8F49hz/Ag/teFGybwmRWzOb4gbr3Wks=
 before_install:
-  - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
+  - openssl aes-256-cbc -k "$super_secret_password" -in  service-account.json.enc -out  service-account.json.txt -d
   - curl https://sdk.cloud.google.com | bash > /dev/null;
   - source $HOME/google-cloud-sdk/path.bash.inc
   - gcloud components update kubectl
@@ -16,10 +17,8 @@ before_install:
   - gcloud container clusters get-credentials multi-cluster
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t will518/react-test -f ./client/Dockerfile.dev ./client
-
 script:
   - docker run -e CI=true will518/react-test npm test
-
 deploy:
   provider: script
   script: bash ./deploy.sh
