@@ -1,25 +1,24 @@
 sudo: required
 services:
-- docker
+  - docker
 env:
   global:
-  - SHA=$(git rev-parse HEAD)
-  - CLOUDSDK_CORE_DISABLE_PROMPTS=1
-  - secure: LkuZdjKzcz3EgRpFy2X6GE+qF3JACnbPPANbPuMIe2H418OYXpFAtJc3tKYYydG6va6RcnhTc8TywrxtrFtX65knB1tHuUf14URVIbEuAh3lo6hAU7I2vp8ge0VkoV16WRGSmkNCcPPz+ddI+BwojAPVuBlwz2FsyAURfyBe+/GCqSeKkl0Tk3Y5TKHw7ymWg1m0z7Fqz0XqGU6Enu8CQ7YbpSIJ5jkhNOzwh1FFQLTGkYjruDy5oR1ErOsHkHKW+yEmZ+rHb0IIb3bLu+dTY4z+SdyWRLcP1lNikngo5G3xtp8qNcX1tVSexQ2pS1oYmUOsTRZ4oI+TP54F8yj+OhSO8M8uDDvmclidt30Z73I8Ke6lY2TkrNlSoN5Q/YHOiOGgf0W2kblC0qw2eJCxZ0VGjyaKeqzpJiWWYiHIfPa/ilkTWCVBca5KTmATM6+4jKtoSH7wFsKbmHR1QQar9gokA3Rrwp01CEpvEg27TOK1aPw79cvLlxOQheNAnN5ePYL5jPNwNd0DLGmmhibJDloxLpslA/pLrFdm5kR3LE5CeCNxEGxS1G4rolil+F3rSJZVQ6Ima7MTCM8HlINffTDzqwo49qkM2uYS/+nWPEitWK00zYdRWiCqKX5qihwFiwtlUNgb22dv5YFUX3fLjN3VtHLXLQbt/XqPBQ2P6UU=
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+    - secure: pyFRJ/HYfeXWHlXbAnTbYxVdUUsfwlM/O3N67zwbz5QlEck9XgkTeIHACk1NCPpsJ25Vw0Jxo8mhTgC4sBbNox6T5GG+RfSSwSBZJb6ee3V6d8sd3PlPguJzYgSeaDbCH0v2MF9vZL84LUy2+LSi+AlnCaMSxlqVEYgok08qDIdXtE8Oia8xnqzrQ/p0Ug4u2b8P17d5rz8bhuu+jrhCoE3dZpSchVYA6C6ftXrhXtp3hapF7anMcz3amxWKpjBYc+TzROgxs3uJoo0YO0i0SFvDTGRbs6SR/PD4yA/esCQXWkamkF3BOfZ0QLoDAQcCRDEVJTJYhDCtgxSP6EVFDFwQ4WQ7NagKw2dgl4hktkFkh50EzDegbAj8HG8s0pb1KaZd+/wli7ZILB9mQbZ8Mpruhtvv7TqWQ+wfylVAMTv4mOFo5ACGvru+E2mEpqAH2l4BocPtU5SOUvrI7dCmVHX0EL8lTEawYJpj2/cYfMz6C5G2IjkZrPCdt0EnTCcKZsHGNahQxUC28QuoBuQc+50JTl7ywsKqKr5naN6llF7eFLt/+6rcTQkVPtHuglqLjAkDIK0KBl+3T0O+SUM861zW7xxjhYL2h7okAT7CVVMe9HSXNg/I2dXob7kgmfjrIfYxNcf1nflYyr/5zBwo3jSlCRN5xmwawX4jadOpBIs=
 before_install:
-- openssl aes-256-cbc -k "$super_secret_password" -in  service-account.json.enc -out  service-account.json.txt
-  -d
-- curl https://sdk.cloud.google.com | bash > /dev/null;
-- source $HOME/google-cloud-sdk/path.bash.inc
-- gcloud components update kubectl
-- gcloud auth activate-service-account --key-file service-account.json
-- gcloud config set project steady-petal-307322
-- gcloud config set compute/region asia-east1
-- gcloud container clusters get-credentials multi-cluster
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-- docker build -t will518/react-test -f ./client/Dockerfile.dev ./client
+  - echo $super_secret_password | gpg --passphrase-fd 0 service-account.json.gpg
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project steady-petal-307322
+  - gcloud config set compute/region asia-east1
+  - gcloud container clusters get-credentials multi-cluster
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t will518/react-test -f ./client/Dockerfile.dev ./client
 script:
-- docker run -e CI=true will518/react-test npm test
+  - docker run -e CI=true will518/react-test npm test
 deploy:
   provider: script
   script: bash ./deploy.sh
