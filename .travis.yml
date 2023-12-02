@@ -8,7 +8,7 @@ env:
   global:
     - SHA=$(git rev-parse HEAD)
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1
-    - secure: pyFRJ/HYfeXWHlXbAnTbYxVdUUsfwlM/O3N67zwbz5QlEck9XgkTeIHACk1NCPpsJ25Vw0Jxo8mhTgC4sBbNox6T5GG+RfSSwSBZJb6ee3V6d8sd3PlPguJzYgSeaDbCH0v2MF9vZL84LUy2+LSi+AlnCaMSxlqVEYgok08qDIdXtE8Oia8xnqzrQ/p0Ug4u2b8P17d5rz8bhuu+jrhCoE3dZpSchVYA6C6ftXrhXtp3hapF7anMcz3amxWKpjBYc+TzROgxs3uJoo0YO0i0SFvDTGRbs6SR/PD4yA/esCQXWkamkF3BOfZ0QLoDAQcCRDEVJTJYhDCtgxSP6EVFDFwQ4WQ7NagKw2dgl4hktkFkh50EzDegbAj8HG8s0pb1KaZd+/wli7ZILB9mQbZ8Mpruhtvv7TqWQ+wfylVAMTv4mOFo5ACGvru+E2mEpqAH2l4BocPtU5SOUvrI7dCmVHX0EL8lTEawYJpj2/cYfMz6C5G2IjkZrPCdt0EnTCcKZsHGNahQxUC28QuoBuQc+50JTl7ywsKqKr5naN6llF7eFLt/+6rcTQkVPtHuglqLjAkDIK0KBl+3T0O+SUM861zW7xxjhYL2h7okAT7CVVMe9HSXNg/I2dXob7kgmfjrIfYxNcf1nflYyr/5zBwo3jSlCRN5xmwawX4jadOpBIs=
+    - secure: dGGfJNOd9acJufdLvekmpQSeQ04oxw3wgQoSFpIZdJGDShSsa+u2ekWHU9PwzgtLjsx8IHauXGQKRONenBPRIgTudn+lZnvqiME8R1u2glA2RwLnjJYZQwgOHQqsyzfvN3awq+zG1dSI79VO5chtEx6wSG+kbvhSxtv3ADqJYUIqa4a8Zzr8zKs/eqCRXOo3rPgdXrgmGDdBD2y6y0O9oy9zfMJqy+IblMTLQy9dL8F6NQLfr5L2KRMRQhIM571AjBeHGGFpt6XJ1Nu2DTYZ+IqOGuBYuzQAu5S5CFFxmDy5/WLtjrHdqNbuKTAPrTELb8GxqGouIokIEEJrxVPz7Qj0VJ8kgubwSsuWDjNpRXupFS44qhBVE7QnPU9rO1z7GfDjpNLWeAkFGrWGm/W3bFAnsF2IZC3NkSJ5zGLgLKvqRlzZWuc6OOl7p7oRIZ/ZUlFCEb/y7tkofqmp8SVpkluM5hwRlWIWeYxc/pFVUGra/xXPOkWxoZ3k9ILX8GvlcA7AwD124piEq/OL5jzFxazfkzUtgDd0hj2Hntn5VZyGGzfgOJChlx81eft+4j8i+SyaLw4UbhNuHsbUx4VfWQy8QpvMiQYM6FQ5g+Ml1cPtM/ONdoFWPCZyk5zwhYUgNNhE8cQhhaI3DAPX8MUHB81Moblz7MRBPXbC8ANTWj4=
 before_install:
   - CLOUDSDK_PYTHON=python3.8
   - echo $super_secret_password | gpg --passphrase-fd 0 service-account.json.gpg
@@ -18,7 +18,7 @@ before_install:
   - gcloud auth activate-service-account --key-file service-account.json
   - cat service-account.json
   - gcloud config set project multi-k8s-406513
-  - gcloud config set compute/zone asia-east1
+  - gcloud config set compute/region asia-east1
   - gcloud container clusters get-credentials multi-cluster
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t will518/react-test -f ./client/Dockerfile.dev ./client
